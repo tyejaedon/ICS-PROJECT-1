@@ -1,0 +1,20 @@
+ [
+  {
+    "id": 101,
+    "message": "✅ Pickup completed successfully",
+    "type": "success",
+    "timestamp": "2025-06-13T08:10:00Z"
+  },
+  {
+    "id": 102,
+    "message": "⏳ Your next pickup is scheduled for June 14",
+    "type": "pending",
+    "timestamp": "2025-06-13T09:00:00Z"
+  },
+  {
+    "id": 103,
+    "message": "❌ Pickup failed due to incorrect location",
+    "type": "error",
+    "timestamp": "2025-06-12T16:00:00Z"
+  }
+]
