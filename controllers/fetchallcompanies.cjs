@@ -1,6 +1,6 @@
 // controllers/user.controller.js
-const User = require('../models/user.cjs'); // Your User model
-const PickupRequest = require('../models/Pickup.cjs'); // Your PickupRequest model
+const User = require('../models/User.cjs'); // Your User model
+const PickupRequest = require('../models/pickup.cjs'); // Your PickupRequest model
 const jwt = require('jsonwebtoken'); // For authentication/authorization
 
 const getCompaniesWithPickupCounts = async (req, res) => {

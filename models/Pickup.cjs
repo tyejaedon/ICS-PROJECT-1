@@ -37,15 +37,22 @@ const pickupRequestSchema = new mongoose.Schema({
       type: String,
       enum: ['Point'],
       default: 'Point'
+      
     },
     coordinates: {
       type: [Number], // [longitude, latitude]
       required: true
+
     }
   },
   pickupDate: {
     type: Date,
     required: true
+  },
+    estimatedWeightKg: {
+    type: Number,
+    required: [true, 'Estimated weight is required'],
+    min: [0.1, 'Weight must be at least 0.1 kg'],
   },
   wasteType: {
     type: String,
@@ -71,6 +78,7 @@ const pickupRequestSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
+  
   image: {
     type: String,
     trim: true // Assuming this is a URL or path to an image
@@ -89,5 +97,7 @@ const pickupRequestSchema = new mongoose.Schema({
 // Enable geospatial indexing for location
 pickupRequestSchema.index({ location: '2dsphere' });
 
-const PickupRequest = mongoose.model('PickupRequest', pickupRequestSchema);
-module.exports = PickupRequest;
+
+
+module.exports = mongoose.models.PickupRequest || mongoose.model('PickupRequest', pickupRequestSchema);
+

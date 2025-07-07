@@ -314,8 +314,9 @@ const PickupMessagingAndStatus = ({ isOpen, onClose, pickup, currentUserRole, on
         </Typography>
 
         {/* Message History Display Area */}
-        <div className="message-history">
-          {pickup.notes && pickup.notes.length > 0 ? (
+        <div className="message-history">'
+        
+          {pickup.notes && pickup.notes.length > 1 ? (
              console.log('Rendering message:', pickup.notes),
             pickup.notes.map((message, index) => (
              

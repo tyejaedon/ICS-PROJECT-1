@@ -7,6 +7,12 @@ const LocationPicker = ({sendData}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedCoords, setSelectedCoords] = useState({ lat: 0, lng: 0 , address: '' });
   const [address, setAddress] = useState('');
+const hostname = window.location.hostname;
+
+const API_BASE_URL =
+  hostname === "localhost" || hostname === "127.0.0.1"
+    ? "http://localhost:5000"
+    : `http://${hostname}:5000`; // Use device's current hostname/IP
 
 const handleSave = async (coords) => {
   setIsOpen(false); // Close modal
@@ -17,7 +23,7 @@ const handleSave = async (coords) => {
   };
 
   try {
-    const response = await axios.get('http://localhost:5000/api/reverse-geocode', {
+    const response = await axios.get(API_BASE_URL + '/api/reverse-geocode', {
       params: {
         lat: coords.lat,
         lon: coords.lng

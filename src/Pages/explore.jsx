@@ -12,6 +12,12 @@ L.Icon.Default.mergeOptions({
   iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
   shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
 });
+const hostname = window.location.hostname;
+
+const API_BASE_URL =
+  hostname === "localhost" || hostname === "127.0.0.1"
+    ? "http://localhost:5000"
+    : `http://${hostname}:5000`; // Use device's current hostname/IP
 
 function Explore() {
   const [selectedLocation, setSelectedLocation] = useState('Nairobi, Kenya');
@@ -40,7 +46,7 @@ function Explore() {
             setLoadingCompanies(false);
             return;
           }
-          const response = await axios.get('http://localhost:5000/api/explore/companies', {
+          const response = await axios.get(API_BASE_URL + '/api/explore/companies', {
             headers: { Authorization: `Bearer ${token}` },
           });
           setCompanies(response.data.companies);
@@ -68,7 +74,7 @@ function Explore() {
             setLoadingPickups(false);
             return;
           }
-          const response = await axios.get('http://localhost:5000/api/explore/pickups', {
+          const response = await axios.get(API_BASE_URL + '/api/explore/pickups', {
             headers: { Authorization: `Bearer ${token}` },
           });
           console.log('Public pickups data:', response.data); // Debugging log

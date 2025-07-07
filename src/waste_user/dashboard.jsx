@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet'; // Import Leaflet for custom icon creation
-
+import OperationalCostManager from './components/operationalcost'; // Import the operational cost component
 // Assuming these components exist and are imported correctly
-import PickupMessagingAndStatus from './components/messaging';
+import PickupMessagingAndStatus from '../communityuser/components/messaging';
 // import ExpandedView from './components/popup'; // You seem to be using PickupMessagingAndStatus as your popup now
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; // Assuming you use react-router-dom for navigation
 import CompanyReportGenerator from './components/report'; // Import the report generator component
+import { set } from 'mongoose';
 
 delete L.Icon.Default.prototype._getIconUrl;
 
@@ -39,20 +40,54 @@ const assignedIcon = new L.Icon({
   popupAnchor: [1, -34],
   shadowSize: [41, 41]
 });
+const hostname = window.location.hostname;
 
-
+const API_BASE_URL =
+  hostname === "localhost" || hostname === "127.0.0.1"
+    ? "http://localhost:5000"
+    : `http://${hostname}:5000`; // Use device's current hostname/IP
 
 
 const showToast = (message, type) => {
   console.log(`Toast (${type}): ${message}`);
   // Implement your actual toast UI logic here (e.g., using a state in this component)
+  return (
+    <div className={`toast toast-${type}`}>
+      <style>
+        {`
+          .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--color-text-primary);
+            color: white;
+            padding: 12px 18px;
+            border-radius: 5px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 9999;
+          } 
+
+          .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        `}
+      </style>
+      {message}
+    </div>
+  );
 };
 
 
 
 const CompanyDashboard = () => {
   const navigate = useNavigate(); // Initialize navigate for react-router-dom
-
+  const [coordinates, setCoordinates] = useState({
+    latitude: -1.2921, // Default latitude for Nairobi
+    longitude: 36.8219
+  }); // Default coordinates for Nairobi
   const [leaders, setLeaders] = useState([]);
 
   const [allPickups, setAllPickups] = useState([]);
@@ -74,12 +109,12 @@ const CompanyDashboard = () => {
       }
 
       // Fetch unassigned pickups
-      const unassignedRes = await axios.get('http://localhost:5000/api/pickup-requests/unassigned', {
+      const unassignedRes = await axios.get( API_BASE_URL + '/api/pickup-requests/unassigned', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
       // Fetch assigned pickups
-      const assignedRes = await axios.get('http://localhost:5000/api/pickup-requests/assigned', {
+      const assignedRes = await axios.get(API_BASE_URL + '/api/pickup-requests/assigned', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
@@ -95,6 +130,7 @@ const CompanyDashboard = () => {
     } catch (error) {
       console.error('Error fetching pickups:', error.response?.data?.message || error.message);
       // You might want to show a toast here
+      showToast('Failed to fetch pickups. Please try again.', 'error');
     }
   };
 
@@ -107,11 +143,12 @@ const CompanyDashboard = () => {
 
   const fetchProfile = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/auth/profile', {
+      const res = await axios.get( API_BASE_URL + '/api/auth/profile', {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       if (res.data) {
         setProfile(res.data);
+       setCoordinates(res.data.location || { latitude: -1.2921, longitude: 36.8219 }); // Default to Nairobi if no location
         setCurrentUserRole(res.data.role || 'company_user'); // Set the role based on profile data
         console.log("Profile fetched successfully:", res.data);
         console.log("User Profile:", res.data.user);
@@ -166,11 +203,11 @@ const CompanyDashboard = () => {
 
       // Determine the correct endpoint based on status
       if (updateData.status === 'rejected') {
-        res = await axios.put(`http://localhost:5000/api/pickup-requests/reject/${id}`, updateData, {
+        res = await axios.put(`${API_BASE_URL}/api/pickup-requests/reject/${id}`, updateData, {
           headers: { Authorization: `Bearer ${token}` }
         });
       } else {
-        res = await axios.put(`http://localhost:5000/api/pickups/${id}`, updateData, {
+        res = await axios.put(`${API_BASE_URL}/api/pickups/${id}`, updateData, {
           headers: { Authorization: `Bearer ${token}` }
         });
       }
@@ -310,6 +347,7 @@ const imageonclick = () => {
       <style>
     
       </style>
+      t
 
       {/* Left Column */}
    
@@ -429,6 +467,9 @@ const imageonclick = () => {
                   {pickup.status.replace('_', ' ')}
                 </span>
               </p>
+              <p>
+                <strong>Weight of Waste:</strong> {pickup.estimatedWeightKg || 'N/A'} kg
+              </p>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -465,6 +506,9 @@ const imageonclick = () => {
                 <span className={`status-${pickup.status}`}>
                   {pickup.status.replace('_', ' ')}
                 </span>
+              </p>
+              <p>
+                <strong>Weight of Waste:</strong> {pickup.estimatedWeightKg || 'N/A'} kg
               </p>
               <button
                 onClick={(e) => {
@@ -537,8 +581,9 @@ const imageonclick = () => {
         </div>
         <div>
           <CompanyReportGenerator />
+    
         </div>
-     
+           <OperationalCostManager userLocationCoordinates = {coordinates} />
          
       </div>
      
