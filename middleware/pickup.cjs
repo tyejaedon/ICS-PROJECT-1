@@ -4,7 +4,7 @@ const router = express.Router();
 const multer = require('multer');
 const PickupRequest = require('../models/Pickup.cjs'); // Adjust the path as necessary
 const jwt = require('jsonwebtoken');
-const User = require('../models/user.cjs'); // Adjust the path as necessary
+const User = require('../models/User.cjs'); // Adjust the path as necessary
 const mongoose = require('mongoose');
 const Notification = require('../models/notification.cjs'); // Adjust the path as necessary
 
@@ -20,6 +20,7 @@ const createPickup =(  async (req, res) => {
       longitude,
       pickupDate,
       image,
+      quantity,
       wasteType,
       notes,
     } = req.body;
@@ -31,6 +32,8 @@ const createPickup =(  async (req, res) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const userId = decoded.id; 
+    const estimatedWeightKg = parseFloat(quantity);
+  
 
 
     // Build pickup object
@@ -41,6 +44,7 @@ const createPickup =(  async (req, res) => {
       wasteType,
       notes,
       image,
+      estimatedWeightKg,
       location: {
         type: 'Point',
         coordinates: [parseFloat(longitude), parseFloat(latitude)], // Ensure correct order: lng, lat

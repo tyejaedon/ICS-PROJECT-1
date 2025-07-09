@@ -21,6 +21,7 @@ router.get('/api/reverse-geocode', async (req, res) => {
     res.json(response.data);
   } catch (err) {
     console.error("Reverse geocoding failed:", err.message);
+    console.log('Incoming reverse geocode request:', req.query);
     res.status(500).json({ error: "Reverse geocoding failed" });
   }
 });

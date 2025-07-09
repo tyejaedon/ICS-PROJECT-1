@@ -1,6 +1,6 @@
 // controllers/reportController.cjs
-const PickupRequest = require('../models/Pickup.cjs'); // Your PickupRequest model
-const User = require('../models/user.cjs');           // Your User model
+const PickupRequest = require('../models/pickup.cjs'); // Your PickupRequest model
+const User = require('../models/User.cjs');           // Your User model
 const Report = require('../models/report.cjs');       // Your Report model
 const jwt = require('jsonwebtoken');                  // For authentication
 const mongoose = require('mongoose');                 // For ObjectId and other Mongoose utilities

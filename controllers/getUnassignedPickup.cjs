@@ -1,5 +1,5 @@
 // controllers/pickupRequest.controller.js
-const User = require('../models/user.cjs');
+const User = require('../models/User.cjs');
 const { getUnassignedPickupsWithDistance } = require('../services/automatedAssigner.cjs');
 
 const jwt = require('jsonwebtoken');

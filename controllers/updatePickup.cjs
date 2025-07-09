@@ -1,10 +1,9 @@
 // controllers/pickupRequest.controller.js
-const PickupRequest = require('../models/Pickup.cjs');
+const PickupRequest = require('../models/pickup.cjs'); // Import the PickupRequest model
 const jwt = require('jsonwebtoken'); // For authenticating the user
 const mongoose = require('mongoose'); // For ObjectId validation
-const User = require('../models/user.cjs'); // Import the User model for authorization
 const Notification = require('../models/notification.cjs'); // Import the Notification model for creating notifications
-
+const User = require('../models/User.cjs'); // Import the User model to fetch user details
 // Function to update Pickup Status and/or add a Message
 const updatePickupStatusAndNotes = async (req, res) => {
   const { id } = req.params; // Get the pickup request ID from the URL

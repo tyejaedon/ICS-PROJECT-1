@@ -5,6 +5,15 @@ import { Box, Modal } from '@mui/material';
 import LocationPicker from './locationPicker';
 import WebcamViewer from './camera';
 
+const hostname = window.location.hostname;
+
+
+
+const API_BASE_URL =
+  hostname === "localhost" || hostname === "127.0.0.1"
+    ? "http://localhost:5000"
+    : `http://${hostname}:5000`; // Use device's current hostname/IP
+
 
 const Signup = ({ display, isclosed }) => {
 const [form, setForm] = useState({
@@ -92,7 +101,7 @@ useEffect(() => {
     setLoading(true);
 
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/signup', form);
+      const res = await axios.post(`${API_BASE_URL}/api/auth/signup`, form);
       console.log(res);
       setError('Signup successful'); 
       setTimeout(() => {

@@ -1,34 +1,32 @@
-const mongoose = require('mongoose'); 
+const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
+    trim: true // Added trim for consistency
   },
-
   email: {
     type: String,
     required: true,
     unique: true,
+    trim: true, // Added trim
+    lowercase: true // Store emails in lowercase for consistency
   },
-
   password: {
     type: String,
     required: true,
   },
-
   profileImage: {
     type: String, // URL or base64 string
-    default: '',  // You can set a default placeholder URL here
+    default: 'https://placehold.co/100x100/aabbcc/ffffff?text=User', // A simple placeholder image
   },
-
   role: {
     type: String,
     enum: ['community_user', 'company_user', 'admin'],
     default: 'community_user',
   },
-
-  // Geospatial data for location-based services
+  // Geospatial data for location-based services (Standard GeoJSON Point)
   location: {
     type: {
       type: String,
@@ -41,20 +39,22 @@ const userSchema = new mongoose.Schema({
     longitude: {
       type: Number,
     },
-  },
-  // Company-specific fields
-
-
   address: {
     type: String,
+    trim: true,
+    default: ''
   },
-
+},
   wasteType: {
-    type: [String], // Array of selected waste types
+    type: [String], // Array of selected waste types (e.g., for company users)
     default: [],
   },
+}, {
+  timestamps: true // Automatically adds createdAt and updatedAt fields
+});
 
+// Create a 2dsphere index on the 'location' field for geospatial queries
+userSchema.index({ location: '2dsphere' });
 
-}, { timestamps: true });
-
-module.exports = mongoose.model('User', userSchema);
+// Check if the model already exists before compiling it to prevent OverwriteModelError
+module.exports = mongoose.models.User || mongoose.model('User', userSchema);
