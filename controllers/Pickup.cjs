@@ -8,7 +8,7 @@ require('dotenv').config();
 
 const SECRET_KEY = process.env.JWT_SECRET;
 
-const PickupRequest = require('../models/Pickup.cjs'); // Make sure it's singular and properly imported
+const PickupRequest = require('../models/pickup.cjs'); // Adjust the path as necessary
 
 
 const getPickupRequests = async (req, res) => {

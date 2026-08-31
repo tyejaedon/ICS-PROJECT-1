@@ -20,6 +20,14 @@ const Dashboard = () => {
   const [selectedPickup, setSelectedPickup] = useState(null);
   const [currentUserRole, setCurrentUserRole] = useState('community_user');
     const schedule = [...scheduletest];
+const hostname = window.location.hostname;
+
+
+const API_BASE_URL =
+  hostname === "localhost" || hostname === "127.0.0.1"
+    ? "http://localhost:5000"
+    : `http://${hostname}:5000`; // Use device's current hostname/IP
+
     const notificationbackground = (status) => {
         switch (status) {
             case 'read':
@@ -36,7 +44,7 @@ const Dashboard = () => {
     }
 const fetchProfile = async () => {
   try {
-    const res = await axios.get('http://localhost:5000/api/auth/profile', {
+    const res = await axios.get(API_BASE_URL + '/api/auth/profile', {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
@@ -84,7 +92,7 @@ const handleDelete = async (notificationId) => { // Accept the ID directly
   console.log('Attempting to delete notification with ID:', notificationId);
 
   try {
-    const res = await axios.delete(`http://localhost:5000/api/notifications/${notificationId}`, {
+    const res = await axios.delete(`${API_BASE_URL}/api/notifications/${notificationId}`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
@@ -149,7 +157,7 @@ const handleDelete = async (notificationId) => { // Accept the ID directly
 
 const fetchNotifications = async () => {
   try {
-    const res = await axios.get('http://localhost:5000/api/notifications', {
+    const res = await axios.get(API_BASE_URL + '/api/notifications', {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`,
       },
@@ -187,7 +195,7 @@ const fetchNotifications = async () => {
 
   const fetchPickupRequests = async () => {
   try {
-    const res = await axios.get('http://localhost:5000/api/pickup-requests', {
+    const res = await axios.get(API_BASE_URL + '/api/pickup-requests', {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
@@ -255,7 +263,7 @@ window.location.href = '/'; // Redirect to login page
       const id = pickupId; // Ensure pickupId is defined
       
 
-      const res = await axios.put(`http://localhost:5000/api/pickups/${id}`, updateData, {
+      const res = await axios.put(`${API_BASE_URL}/api/pickups/${id}`, updateData, {
         headers: { Authorization: `Bearer ${token}` }
       });
 

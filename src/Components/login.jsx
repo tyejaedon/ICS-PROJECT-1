@@ -4,6 +4,15 @@ import { useNavigate } from 'react-router-dom';
 
 import { Box, Modal } from '@mui/material';
 
+const hostname = window.location.hostname;
+
+
+
+const API_BASE_URL =
+  hostname === "localhost" || hostname === "127.0.0.1"
+    ? "http://localhost:5000"
+    : `http://${hostname}:5000`; // Use device's current hostname/IP
+
 const Login = ({ display, isclosed }) => {
   const [form, setForm] = useState({
     email: '',
@@ -46,7 +55,7 @@ const Login = ({ display, isclosed }) => {
 
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', form);
+      const res = await axios.post( API_BASE_URL + '/api/auth/login', form);
       console.log('Login success:', res.data);
       setError('Login successful');
 

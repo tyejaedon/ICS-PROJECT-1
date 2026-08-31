@@ -4,8 +4,12 @@ import WebcamViewer from '../../Components/camera';
 import LocationPicker from '../../Components/locationPicker';
 import axios from 'axios';
 import imageCompression from 'browser-image-compression';
+const hostname = window.location.hostname;
 
-
+const API_BASE_URL =
+  hostname === "localhost" || hostname === "127.0.0.1"
+    ? "http://localhost:5000"
+    : `http://${hostname}:5000`; // Use device's current hostname/IP
 
 
 
@@ -33,7 +37,7 @@ const handleSubmit = async (e) => {
   e.preventDefault();
 
 try {
-  const res = await axios.post('http://localhost:5000/api/pickup', form, {
+  const res = await axios.post(API_BASE_URL + '/api/pickup', form, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('token')}`,
     },

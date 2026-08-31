@@ -1,5 +1,5 @@
 const {getAssignedPickupsWithDistance} = require('../services/automatedAssigner.cjs');
-const User = require('../models/user.cjs');
+const User = require('../models/User.cjs');
 const jwt = require('jsonwebtoken');
 const fetchAssignedPickupInfo = async (req, res) => {
   try {
@@ -32,10 +32,7 @@ const fetchAssignedPickupInfo = async (req, res) => {
         console.error("Error: 'combined' is undefined or null before sending response.");
         return res.status(500).json({ error: "Internal server error: Data not prepared." });
     }
-        console.log('Assigned pickups with distance (before sending response):', combined);
-    console.log('Type of combined:', typeof combined);
-    console.log('Is combined an array?', Array.isArray(combined));
-    console.log('Number of items in combined:', combined ? combined.length : 'N/A');
+
    
 
 

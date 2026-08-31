@@ -1,7 +1,4 @@
-import React, { use } from 'react';
-import LoginDropdown from '../Components/dropdown';
-import { useEffect, useState} from 'react';
-import { Link, Navigate } from 'react-router-dom';
+
 
 const stepsData = [
   {
@@ -42,121 +39,121 @@ const stepsData = [
 ];
 
 
+import React, { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
+import LoginDropdown from './dropdown';
+
 const Navbar = () => {
-const hover = React.useRef(null);
-const [isHovered, setIsHovered] = React.useState(false);
-const [Dashlink, setLink] = React.useState(''); // 'waste_user' or 'community_user'
+  const [isHovered, setIsHovered] = useState(false);
+  const [Dashlink, setLink] = useState('');
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  const toggleMenu = () => setMenuOpen(!menuOpen);
 
-const handleMouseEnter = () => {
-    setIsHovered(true);
-
-  };
-  
+  const handleMouseEnter = () => setIsHovered(true);
   const handleMouseLeave = () => {
-    setTimeout(() => {
-      setIsHovered(false);
-    }, 4000); // Delay before hiding the dropdown
-
+    setTimeout(() => setIsHovered(false), 4000);
   };
 
-    const [menuOpen, setMenuOpen] = useState(false);
-     const toggleMenu = () => setMenuOpen(!menuOpen);
- const navscroll = () => {
-    const nav = document.getElementsByClassName('navbar-container');
-  
-    if (window.scrollY > 5) {
-      nav[0].classList.add('scrolled');
-      console.log('scrolled');
-    } else {
-      nav[0].classList.remove('scrolled');
-      console.log('not scrolled');
-    }
-  }
-  window.addEventListener('scroll', navscroll);
-const [isloggedIn, setIsLoggedIn] = useState(false);
+  // Scroll handler
+  useEffect(() => {
+    const navscroll = () => {
+      const nav = document.getElementsByClassName('navbar-container')[0];
+      if (nav) {
+        if (window.scrollY > 5) {
+          nav.classList.add('scrolled');
+        } else {
+          nav.classList.remove('scrolled');
+        }
+      }
+    };
 
-const LoginDropdownContent = () => {
-if(!isloggedIn){
-  return (
-    console.log('not logged in')
-    
-      ['Login', 'Sign Up', 'Forgot Password']
-    
-  )
-}else{
-  return (
-    console.log('logged in')
-    ['Profile', 'Settings', 'Logout']
-  )
-}
-};
+    window.addEventListener('scroll', navscroll);
+    return () => window.removeEventListener('scroll', navscroll);
+  }, []);
 
-useEffect(() => {
-    // Check if user is logged in by checking localStorage
+  // Check login state on mount
+  useEffect(() => {
     const user = localStorage.getItem('user');
+    const type = localStorage.getItem('usertype');
+
     if (user) {
       setIsLoggedIn(true);
-      if (localStorage.getItem('usertype') == '1') {
-       setLink('/community-user/dashboard');
-        
-      } else if (localStorage.getItem('usertype') == '2') {
-       setLink('/company-user/dashboard');
-      }else if (localStorage.getItem('usertype') == '3') {
-      
-        setLink('/admin/dashboard');
+
+      switch (type) {
+        case '1':
+          setLink('/community-user/dashboard');
+          break;
+        case '2':
+          setLink('/company-user/dashboard');
+          break;
+        case '3':
+          setLink('/admin/dashboard');
+          break;
+        default:
+          setLink('/'); // fallback
       }
     }
+  }, []);
 
-  }, [localStorage.getItem('user')]);
-  
-
-
-
-
-    return (
-      isloggedIn ? (
-        <header className="navbar-container" id='dash-nav' >
-          <nav className="navbar-community">
-            {/* Hamburger Icon */}
-            <button className="hamburger" onClick={toggleMenu}>
-              ☰
-            </button>
-            <div className="navbar-logo">
-              <img className='logo' src="/logo.png" alt="Logo" />
-            </div>
-            <ul className={`navbar-nav-list dash-nav-list ${menuOpen ? 'open' : ''}`}>
-              <li><Link to ="/">Explore</Link></li>
-              <li><Link to={Dashlink}>Dashboard</Link></li>
-            </ul>
-          </nav>
-        </header>
-      ) : (
-        <header className="navbar-container">
-          <nav className="navbar-nav">
-            {/* Hamburger Icon */}
-            <button className="hamburger" onClick={toggleMenu}>
-              ☰
-            </button>
-            <div className="navbar-logo" onClick={() => window.location.href = "/"} ><img className='logo' src="\logo.png" alt="Logo" /></div>
-            <ul className= {`navbar-nav-list  ${menuOpen ? 'open' : ''}`}>
-              <li><Link to ="/">Home</Link></li>
-              <li><Link to="/how-it-works">How It Works</Link></li>
-              <li>
-                <img
-                  onMouseEnter={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave}
-                  className='login-icon'
-                  src='public\user.svg'
-                  alt="User"
-                />
-                <LoginDropdown isHovered={isHovered} Contents ={LoginDropdownContent} />
-              </li>
-            </ul>
-          </nav>
-        </header>
-      )
+  // Dropdown contents
+  const LoginDropdownContent = () => {
+    return isLoggedIn ? (
+      <ul>
+        <li><Link to="/profile">Profile</Link></li>
+        <li><Link to="/settings">Settings</Link></li>
+        <li><Link to="/logout">Logout</Link></li>
+      </ul>
+    ) : (
+      <ul>
+        <li><Link to="/login">Login</Link></li>
+        <li><Link to="/signup">Sign Up</Link></li>
+        <li><Link to="/forgot-password">Forgot Password</Link></li>
+      </ul>
     );
   };
 
+  return isLoggedIn ? (
+    <header className="navbar-container" id="dash-nav">
+      <nav className="navbar-community">
+        <button className="hamburger" onClick={toggleMenu}>☰</button>
+        <div className="navbar-logo">
+          <img className="logo" src="/logo.png" alt="Logo" />
+        </div>
+        <ul className={`navbar-nav-list  ${menuOpen ? 'open' : ''}`}>
+          <li><Link to="/">Explore</Link></li>
+          <li><Link to={Dashlink}>Dashboard</Link></li>
+        </ul>
+      </nav>
+    </header>
+  ) : (
+    <header className="navbar-container">
+      <nav className="navbar-nav">
+        <button className="hamburger" onClick={toggleMenu}>☰</button>
+        <div className="navbar-logo" onClick={() => window.location.href = "/"}>
+          <img className="logo" src="/logo.png" alt="Logo" />
+        </div>
+        <ul className={`navbar-nav-list ${menuOpen ? 'open' : ''}`}>
+          <li><Link to="/">Home</Link></li>
+          <li><Link to="/how-it-works">How It Works</Link></li>
+          <li>
+            <img
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              className="login-icon"
+              src="/user.svg"
+              alt="User"
+            />
+            <LoginDropdown isHovered={isHovered} Contents={LoginDropdownContent} />
+          </li>
+        </ul>
+      </nav>
+    </header>
+  );
+};
+
 export default Navbar;
+
+
+

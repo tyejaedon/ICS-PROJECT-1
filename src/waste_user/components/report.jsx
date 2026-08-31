@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
+
+
+const hostname = window.location.hostname;
+
+const API_BASE_URL =
+  hostname === "localhost" || hostname === "127.0.0.1"
+    ? "http://localhost:5000"
+    : `http://${hostname}:5000`; // Use device's current hostname/IP
+
 // Placeholder for showToast function (implement in your parent/context)
 const showToast = (message, type) => {
   console.log(`Toast (${type}): ${message}`);
@@ -37,7 +46,7 @@ const CompanyReportGenerator = () => {
       if (startDate) params.startDate = startDate;
       if (endDate) params.endDate = endDate;
 
-      const response = await axios.get('http://localhost:5000/api/report', {
+      const response = await axios.get(`${API_BASE_URL}/api/report`, {
         headers: { Authorization: `Bearer ${token}` },
        
       });

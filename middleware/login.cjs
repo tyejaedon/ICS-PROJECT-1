@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 require('dotenv').config();
 const SECRET_KEY = process.env.JWT_SECRET;
-const User = require('../models/user.cjs'); // Adjust the path as necessary
+const User = require('../models/User.cjs'); // Adjust the path as necessary
 
 
 const authLogin = async (req, res) => {
@@ -27,6 +27,10 @@ const authLogin = async (req, res) => {
     res.json({ message: 'Login successful', token,payload });
   } catch (err) {
     console.error('Login error:', err); // Helpful for debugging
+    console.error('Error details:', {
+      message: err.message,
+      stack: err.stack
+    }); // Log error details for better debugging
     res.status(500).json({ message: 'Error logging in', error: err.message });
   }
 };

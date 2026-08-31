@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 require('dotenv').config();
 const SECRET_KEY = process.env.JWT_SECRET;
-const User = require('../models/user.cjs'); // Adjust the path as necessary
+const User = require('../models/User.cjs'); // Adjust the path as necessary
 
 /*************  ✨ Windsurf Command ⭐  *************/
 /**
@@ -37,9 +37,9 @@ const AuthProfile = async (req, res) => {
     };
 if (user.role === 'company_user') {
   payload.wasteType = user.wasteType;
-  payload.latitude = user.latitude;
-  payload.longitude = user.longitude;
-  payload.address = user.address;
+  payload.address = user.location.address; // Assuming address is a string
+  payload.location = user.location; // Assuming location is a GeoJSON object
+
 }
     res.status(200).json(payload);
  

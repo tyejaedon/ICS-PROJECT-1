@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 require('dotenv').config();
 const SECRET_KEY = process.env.JWT_SECRET;
-const User = require('../models/user.cjs'); // Adjust the path as necessary
+const User = require('../models/User.cjs'); // Adjust the path as necessary
 
 const AuthSignup = async (req, res) => {
   const { name, email, password, profileImage, role, latitude, longitude, address, wasteType } = req.body;
@@ -52,7 +52,7 @@ console.log('Latitude:', latitude, 'Longitude:', longitude, 'Address:', address,
     };
 
     const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '1d' });
-
+    
     res.json({
       message: 'User created successfully',
       token,
@@ -73,10 +73,15 @@ console.log('Latitude:', latitude, 'Longitude:', longitude, 'Address:', address,
         wasteType: user.wasteType
       }
     });
+    console.log('User created successfully:', user);
   } catch (err) {
     console.error('Signup error:', err);
     // More specific error handling for Mongoose validation errors
     if (err.name === 'ValidationError') {
+      const errors = Object.keys(err.errors).map(key => ({
+        field: key,
+        message: err.errors[key].message
+      }));
       return res.status(400).json({ message: err.message, errors: err.errors });
     }
     res.status(500).json({ message: 'Error creating user', error: err.message });

@@ -6,6 +6,13 @@ import axios from 'axios';
 const PrivateRoute = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(null); // null = loading, true = ok, false = invalid
   const intervalMs = 5 * 60 * 1000;
+const hostname = window.location.hostname;
+
+const API_BASE_URL =
+  hostname === "localhost" || hostname === "127.0.0.1"
+    ? "http://localhost:5000"
+    : `http://${hostname}:5000`; // Use device's current hostname/IP
+
 
   useEffect(() => {
     const checkToken = async () => {
@@ -16,7 +23,7 @@ const PrivateRoute = ({ children }) => {
       }
 
       try {
-        const res = await axios.get('http://localhost:5000/api/auth/check', {
+        const res = await axios.get(API_BASE_URL + '/api/auth/check', {
           headers: {
             'Authorization': `Bearer ${token}`
           }

@@ -1,7 +1,7 @@
 // controllers/pickupRequest.controller.js
 
-const PickupRequest = require('../models/Pickup.cjs'); // Your PickupRequest model
-const User = require('../models/user.cjs'); // Your User model (for populating assignedTo)
+const PickupRequest = require('../models/pickup.cjs'); // Your PickupRequest model
+const User = require('../models/User.cjs'); // Your User model (for populating assignedTo)
 const jwt = require('jsonwebtoken'); // For authentication
 
 /**
